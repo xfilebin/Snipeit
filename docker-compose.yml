@@ -1,0 +1,49 @@
+version: "3"
+services:
+  mysql:
+    image: linuxserver/mariadb
+    container_name: snipe_mysql
+    restart: always
+    volumes:
+      - ./config:/config
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - MYSQL_ROOT_PASSWORD=admin@123
+      - MYSQL_USER=snipe
+      - MYSQL_PASSWORD=admin@123
+      - MYSQL_DATABASE=snipe
+      - TZ=Asia/Ho_Chi_Minh
+      - APP_TIMEZONE=Asia/Ho_Chi_Minh
+  snipeit:
+    image: linuxserver/snipe-it:latest
+    container_name: snipe-it
+    restart: always
+    depends_on:
+      - mysql
+    volumes:
+      - ./config:/config
+    environment:
+      - NGINX_APP_URL=http://192.168.10.201:58080
+      - MYSQL_PORT_3306_TCP_ADDR=mysql
+      - MYSQL_PORT_3306_TCP_PORT=3306
+      - MYSQL_DATABASE=snipe
+      - MYSQL_USER=snipe
+      - MYSQL_PASSWORD=admin@123
+      - PGID=1000
+      - PUID=1000
+      - TZ=Asia/Ho_Chi_Minh
+      - APP_TIMEZONE=Asia/Ho_Chi_Minh
+      - MAIL_DRIVER=smtp
+      - MAIL_HOST=smtp.office365.com
+      - MAIL_PORT=587
+      - MAIL_USERNAME=thiendoanvo@hotmail.com
+      - MAIL_PASSWORD=04031143Aa2@@
+      - MAIL_ENCRYPTION=STARTTLS
+      - MAIL_FROM_ADDR=thiendoanvo@hotmail.com
+      - MAIL_FROM_NAME='Asset'
+      - MAIL_REPLYTO_ADDR=thiendoanvo@hotmail.com
+      - MAIL_REPLYTO_NAME='Snipe-IT'
+    ports:
+      - "60001:80"
